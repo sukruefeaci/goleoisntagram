@@ -8,7 +8,7 @@ Seslendirme metinleri aşağıdaki değerlerden otomatik üretilir
 """
 
 # --- Telegram / marka ---------------------------------------------------------
-BOT_USERNAME = "@KULLANICI_ADI"     # Telegram bot kullanıcı adı (ekrandaki @...)
+BOT_USERNAME = "@goleoaibot"        # Telegram bot kullanıcı adı (ekrandaki @...)
 BOT_NAME = "GOLEO BOT"              # Butondaki yazı
 BRAND = "GOLEO"                     # En alttaki küçük yazıdaki marka
 
@@ -16,7 +16,7 @@ BRAND = "GOLEO"                     # En alttaki küçük yazıdaki marka
 STEP = 1                            # Kaçıncı adım (1 -> "1. ADIM", seste "Birinci adım")
 BANKROLL = 500                      # Bu adımdaki kasa (TL)
 START_BANKROLL = 500                # Serinin başlangıç kasası (başlıkta "500 TL → GTA 6")
-GOAL_TL = 3500                      # GTA 6 hedef tutarı (ilerleme çubuğu bunun yüzdesi)
+GOAL_TL = 5000                      # GTA 6 hedef tutarı (ilerleme çubuğu bunun yüzdesi)
 
 # --- Maç ve tercih ------------------------------------------------------------
 HOME_TEAM = "Başakşehir"
