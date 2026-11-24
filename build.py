@@ -6,7 +6,8 @@
 4) audio.py    -> seslendirme + beat + efekt miksi (-14 LUFS)
 5) çıktı       -> output/<OUTPUT_NAME>.mp4 ve output/<OUTPUT_NAME>_seslendirme.mp3
 
-  --skip-tts : sesleri yeniden üretmeden (mevcut build/audio ile) render al
+  --skip-tts      : sesleri yeniden üretmeden (mevcut build/audio ile) render al
+  --voice ses.mp3 : edge-tts yerine kendi tek parça kaydını kullan (align.py ile sahnelere bölünür)
 """
 import json
 import os
@@ -29,7 +30,10 @@ def main():
     os.makedirs("build/mix", exist_ok=True)
     os.makedirs("output", exist_ok=True)
 
-    if "--skip-tts" not in sys.argv:
+    if "--voice" in sys.argv:           # kendi kaydın: python3 build.py --voice ses.mp3
+        import align
+        align.main(sys.argv[sys.argv.index("--voice") + 1])
+    elif "--skip-tts" not in sys.argv:
         tts.main()
     with open("build/audio/engine.json") as f:
         eng = json.load(f)
@@ -70,7 +74,7 @@ def main():
     run(["ffmpeg", "-y", "-v", "error", "-i", voice_wav, "-c:a", "libmp3lame", "-b:a", "192k", mp3])
 
     m = audio.measure(out)
-    print(f"[build] TTS: {eng['engine']} (hız {eng['rate']:+d}%)")
+    print(f"[build] Ses: {eng['engine']}" + (f" (hız {eng['rate']:+d}%)" if eng.get("rate") else ""))
     print(f"[build] Loudness: {m['input_i']} LUFS, true-peak {m['input_tp']} dBTP")
     print(f"[build] Video: {out}\n[build] Seslendirme: {mp3}")
 

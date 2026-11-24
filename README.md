@@ -31,11 +31,13 @@ pip install edge-tts      # bir kez
 python3 build.py          # -> output/<OUTPUT_NAME>.mp4 ve _seslendirme.mp3
 python3 build.py --skip-tts   # sadece görsel değiştiyse, sesi yeniden üretmez
 python3 render.py 3           # tek sahne önizleme -> build/preview/scene3.png
+python3 build.py --voice voice/kayit.mp3   # kendi tek parça kaydınla (ElevenLabs vb.)
 ```
 
 ## Dosyalar
 
 - `tts.py`: her sahnenin sesi ayrı; edge-tts → gTTS → Piper sırasıyla dener; kelime zamanlarını kaydeder, uzun duraksamaları kısaltır
+- `align.py`: kendi kaydını aynı metnin edge-tts sürümüyle DTW ile hizalar, sahnelere böler ve kelime zamanlarını çıkarır (metin `config.py`'deki ile aynı kelimeleri içermeli)
 - `render.py`: sahneler (animasyonlar kelime zamanlarına bağlı), güvenli alan: üst/alt 250 px
 - `audio.py`: kodla üretilen beat / whoosh / tık / ding; seslendirme -14 LUFS, beat ~20 dB altında, final -14 LUFS
 - `build.py`: hepsini sırayla çalıştırır, sahneleri ayrı render edip ffmpeg ile birleştirir
