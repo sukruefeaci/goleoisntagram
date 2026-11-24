@@ -129,9 +129,12 @@ def snap_to_pauses(words, seg, text):
     return words
 
 
-def main(path):
-    tts.main()  # referans (edge-tts) — kelime zamanları için
-    texts = config.voice_texts()
+def main(path, texts=None, out=None, make_ref=None):
+    """texts/out/make_ref verilmezse Reels serisi (config.py) için çalışır."""
+    global OUT
+    OUT = out or tts.OUT
+    (make_ref or tts.main)()  # referans (edge-tts) — kelime zamanları için
+    texts = texts or config.voice_texts()
     gap = 0.5
     ref_parts, ref_words, bounds, t = [], [], [], 0.0
     for i in texts:

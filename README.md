@@ -41,3 +41,14 @@ python3 build.py --voice voice/kayit.mp3   # kendi tek parça kaydınla (ElevenL
 - `render.py`: sahneler (animasyonlar kelime zamanlarına bağlı), güvenli alan: üst/alt 250 px
 - `audio.py`: kodla üretilen beat / whoosh / tık / ding; seslendirme -14 LUFS, beat ~20 dB altında, final -14 LUFS
 - `build.py`: hepsini sırayla çalıştırır, sahneleri ayrı render edip ffmpeg ile birleştirir
+
+## Günlük "tutan tahminler" Reels'i (promo.py)
+
+`promo.py` dosyasının en üstündeki `DATE`, `DATE_SLUG` ve `BOTS` listesini o günün tutan tahminleriyle güncelle:
+
+```bash
+python3 promo.py                     # edge-tts seslendirmeyle
+python3 promo.py --voice voice/x.mp3 # kendi tek parça kaydınla
+```
+
+Seslendirme metinleri `BOTS` verisinden otomatik üretilir (`short` = seste okunacak kısa takım adı).
