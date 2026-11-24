@@ -290,11 +290,25 @@ class Hook(Scene):
         self.t_a = self.ev(0.02, "whoosh")
         self.t_arrow = self.ev(self.at("liradan", default=0.4) + 0.1, "pop")
         self.t_b = self.ev(self.at("GTA", default=0.8) - 0.05, "whoosh")
-        self.t_step = self.ev(self.at("Birinci", default=1.8) - 0.05, "pop")
+        from numtr import ordinal_words
+        self.t_step = self.ev(self.at(ordinal_words(config.STEP).split()[0], default=1.8) - 0.05, "pop")
+        self.t_win = self.ev(0.02, "ding") if config.STEP > 1 else None
+        if config.STEP > 1:
+            self.t_a = self.ev(self.at("Beş", default=0.8) - 0.08, "whoosh")
 
     def draw(self, c, t):
+        if self.t_win is not None:
+            win = text_sprite(f"{config.STEP - 1}. KUPON TUTTU", 54, (10, 30, 18), F_BLACK)
+            chk = emoji_sprite("✅", 56)
+            bw = win.width + chk.width + 70
+            p = prog(t, self.t_win, 0.4)
+            if p > 0:
+                s = 0.3 + 0.7 * ease_out_back(p, 2.6)
+                place(c, panel_sprite(bw, 100, 50, GREEN + (255,), None, glow=GREEN_GLOW), W / 2, 500, s, clamp(p * 3))
+                place(c, win, W / 2 + (-bw / 2 + 25 + win.width / 2) * s, 500, s, clamp(p * 3))
+                place(c, chk, W / 2 + (bw / 2 - 25 - chk.width / 2) * s, 500, s, clamp(p * 3))
         a = text_sprite(f"{config.fmt_tl(config.START_BANKROLL)} TL", 200, GREEN, glow=GREEN_GLOW)
-        slide_in(c, a, W / 2, 680, t, self.t_a, dx=-700, dur=0.3)
+        slide_in(c, a, W / 2, 700 if config.STEP > 1 else 680, t, self.t_a, dx=-700, dur=0.3)
         ar = arrow_down_sprite(120, PURPLE, PURPLE)
         p = prog(t, self.t_arrow, 0.3)
         if p > 0:
@@ -326,13 +340,14 @@ class Kasa(Scene):
         add_ticks(self, self.c0, self.c1)
 
     def draw(self, c, t):
-        lab = text_sprite("BAŞLANGIÇ KASASI", 80, WHITE, glow=PURPLE, glow_r=16, glow_a=1.0, max_w=940)
+        lab = text_sprite("BAŞLANGIÇ KASASI" if config.STEP == 1 else "GÜNCEL KASA", 80, WHITE, glow=PURPLE, glow_r=16, glow_a=1.0, max_w=940)
         slide_in(c, lab, W / 2, 700, t, self.t_lab, dy=-120)
         p = prog(t, self.t_card, 0.4)
         if p > 0:
             s = 0.6 + 0.4 * ease_out_back(p)
             place(c, panel_sprite(900, 330, 48, CARD + (235,), GREEN, 5, glow=GREEN_GLOW), W / 2, 960, s, clamp(p * 3))
-            v = counter_value(t, self.c0, self.c1, 0, config.BANKROLL)
+            v = counter_value(t, self.c0, self.c1, config.PREV_BANKROLL if config.STEP > 1 else 0,
+                              config.BANKROLL)
             num = text_sprite(f"{config.fmt_tl(v)} TL", 180, GREEN, glow=GREEN_GLOW, glow_r=18, max_w=820)
             land = prog(t, self.c1, 0.25)
             bump = 1 + 0.08 * math.sin(math.pi * land)
@@ -342,7 +357,10 @@ class Kasa(Scene):
 
 
 def counter_value(t, t0, t1, a, b):
-    return a + (b - a) * ease_out_cubic(prog(t, t0, t1 - t0))
+    p = prog(t, t0, t1 - t0)
+    if p >= 1:
+        return b                      # son değer tam (kuruşlu olabilir)
+    return int(a + (b - a) * ease_out_cubic(p))  # sayarken tam sayı göster
 
 
 def add_ticks(scene, t0, t1, every=2):
@@ -357,8 +375,8 @@ class Tercih(Scene):
     def __init__(self, n, meta):
         super().__init__(n, meta)
         self.t_head = self.ev(0.02, "whoosh")
-        self.t_card = self.ev(self.at("tercih", default=0.4), "whoosh")
         self.t_home = self.ev(self.at(config.HOME_TEAM[:4], default=1.0) - 0.05, "pop")
+        self.t_card = self.ev(max(0.12, min(self.at("tercih", default=0.4), self.t_home - 0.3)), "whoosh")
         self.t_away = self.ev(self.at(config.AWAY_TEAM[:4], default=1.9) - 0.05, "pop")
         first_pick_word = config.PICK_SPOKEN.split()[0]
         self.t_pick = self.ev(self.at(first_pick_word, default=2.8) - 0.05, "whoosh")
@@ -456,7 +474,7 @@ class Hesap(Scene):
                          96, WHITE, max_w=960)
         slide_in(c, eq, W / 2, 620, t, self.t_eq, dx=600, dur=0.3)
         v = counter_value(t, self.c0, self.c1, config.BANKROLL, config.NEW_BANKROLL)
-        num = text_sprite(f"{config.fmt_tl(v)} TL", 200, GREEN, glow=GREEN_GLOW, glow_r=24, max_w=960)
+        num = text_sprite(f"{config.fmt_tl(v)} TL", 200, GREEN, glow=GREEN_GLOW, glow_r=24, max_w=880)
         land = prog(t, self.c1, 0.28)
         p = prog(t, 0.12, 0.35)
         if p > 0:

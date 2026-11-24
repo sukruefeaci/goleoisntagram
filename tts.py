@@ -24,7 +24,7 @@ def probe_duration(path):
 
 
 SR = 48000
-MAX_PAUSE = 0.22   # cümle arası uzun duraklamalar bu süreye kısaltılır (sn)
+MAX_PAUSE = config.MAX_PAUSE  # uzun duraklamalar bu süreye kısaltılır (sn)
 
 
 def decode(path):

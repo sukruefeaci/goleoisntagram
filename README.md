@@ -12,15 +12,17 @@ Python + Pillow + ffmpeg ile 1080×1920, 30 fps, H.264 dikey video; edge-tts ses
 | `BOT_NAME`, `BRAND` | Buton yazısı (`GOLEO BOT`) ve alttaki marka |
 | `STEP` | Adım numarası (`1. ADIM`, seste "Birinci adım", sonraki adım otomatik) |
 | `BANKROLL` | Bu adımın kasası (sahne 2 sayacı, sahne 4 hesabı) |
+| `PREV_BANKROLL` | Önceki adımın kasası; sahne 2 sayacı buradan başlar, 2. adımdan itibaren "N. KUPON TUTTU ✅" rozeti çıkar |
 | `START_BANKROLL` | Serinin başlangıcı (başlıktaki `500 TL → GTA 6`) |
 | `GOAL_TL` | GTA 6 hedefi; ilerleme çubuğu `kasa / GOAL_TL` |
 | `HOME_TEAM`, `AWAY_TEAM` | Maç kartı + seslendirme |
 | `PICK` / `PICK_SPOKEN` | Ekrandaki tercih / seste okunan hâli |
 | `ODDS` | Oran (yeni kasa = `BANKROLL × ODDS`, otomatik) |
-| `TTS_RATE`, `MAX_TOTAL`, `FIT_TO_MAX` | Konuşma hızı ve 20 sn sınırına otomatik sığdırma |
+| `TTS_RATE`, `MAX_PAUSE` | Konuşma hızı ve cümle arası duraklama (düşük hız + uzun duraklama = daha doğal) |
+| `MAX_TOTAL`, `MAX_RATE`, `FIT_TO_MAX` | Süre sınırı; aşılırsa hız en fazla `MAX_RATE`'e kadar artırılır |
 | `VOICE_OVERRIDES` | Bir sahnenin seslendirme metnini elle yazmak için |
 
-Sayılar seslendirme için otomatik Türkçe yazıya çevrilir (`numtr.py`): 850 → "sekiz yüz elli", 1.70 → "bir virgül yetmiş".
+Sayılar seslendirme için otomatik Türkçe yazıya çevrilir (`numtr.py`): 850 → "sekiz yüz elli", 1.70 → "bir virgül yetmiş", 1.402,50 → "bin dört yüz iki buçuk lira". Yeni kasa kuruşuyla birlikte tutulur.
 
 2. Çalıştır:
 
