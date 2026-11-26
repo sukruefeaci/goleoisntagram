@@ -1,0 +1,36 @@
+name: GOLEO YZ - günlük öğrenme
+
+on:
+  schedule:
+    - cron: "17 5 * * *"   # her gün 08:17 (TSİ)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: goleo-yz
+  cancel-in-progress: false
+
+jobs:
+  ogren:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: yapay-zeka
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Veri çek, karne çıkar, kendini eğit, yeni maçları tahmin et
+        run: python ai.py guncelle
+      - name: Öğrendiklerini kaydet
+        run: |
+          git config user.name "goleo-yz"
+          git config user.email "goleo-yz@users.noreply.github.com"
+          git add durum/
+          git diff --cached --quiet || git commit -m "YZ: günlük öğrenme $(date -u +%F)"
+          git push
